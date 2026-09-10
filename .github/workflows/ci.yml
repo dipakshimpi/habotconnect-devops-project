@@ -1,6 +1,9 @@
 # Habot Connect FZCO — Junior Cloud & DevOps Engineer Hiring Project
+#
 # File: .github/workflows/ci.yml
-# Purpose: Fail-closed CI checks for YAML, Terraform, secrets, and security.
+# Purpose: Fail-closed CI checks for Terraform correctness and
+#          hardcoded secret detection.
+#
 # Author: Dipak Shimpi
 
 name: Poka-Yoke CI
@@ -9,14 +12,27 @@ on:
   push:
   pull_request:
 
+# The workflow only needs to read repository contents.
+# Keeping permissions minimal follows the least-privilege principle.
+permissions:
+  contents: read
+
 jobs:
   validate:
     name: Validate Infrastructure
     runs-on: ubuntu-latest
 
     steps:
+      # ----------------------------------------------------------
+      # Checkout
+      # ----------------------------------------------------------
+
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # ----------------------------------------------------------
+      # Terraform
+      # ----------------------------------------------------------
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
@@ -34,3 +50,12 @@ jobs:
       - name: Validate Terraform
         working-directory: terraform
         run: terraform validate
+
+      # ----------------------------------------------------------
+      # Secret Detection
+      # ----------------------------------------------------------
+
+      - name: Scan repository for hardcoded secrets
+        uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
