@@ -3,7 +3,7 @@
 #
 # File: .github/workflows/ci.yml
 # Purpose: Fail-closed CI checks for YAML correctness, Terraform
-#          validation, and hardcoded secret detection.
+#          validation, hardcoded secrets, and IaC security.
 #
 # Author: Dipak Shimpi
 
@@ -70,3 +70,15 @@ jobs:
         uses: gitleaks/gitleaks-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ----------------------------------------------------------
+      # Infrastructure Security Scan
+      # ----------------------------------------------------------
+
+      - name: Scan Terraform for security misconfigurations
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: config
+          scan-ref: terraform
+          severity: HIGH,CRITICAL
+          exit-code: 1
