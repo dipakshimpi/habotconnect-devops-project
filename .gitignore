@@ -1,0 +1,11 @@
+# Terraform generated files
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# Environment-specific Terraform variables
+terraform.tfvars
+*.auto.tfvars
+
+# Local credentials
+*.json
