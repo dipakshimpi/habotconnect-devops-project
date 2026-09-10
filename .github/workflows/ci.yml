@@ -1,8 +1,8 @@
 # Habot Connect FZCO — Junior Cloud & DevOps Engineer Hiring Project
 #
 # File: .github/workflows/ci.yml
-# Purpose: Fail-closed CI checks for Terraform correctness and
-#          hardcoded secret detection.
+# Purpose: Fail-closed CI checks for YAML correctness, Terraform
+#          validation, and hardcoded secret detection.
 #
 # Author: Dipak Shimpi
 
@@ -13,7 +13,7 @@ on:
   pull_request:
 
 # The workflow only needs to read repository contents.
-# Keeping permissions minimal follows the least-privilege principle.
+# This follows the least-privilege principle.
 permissions:
   contents: read
 
@@ -24,18 +24,28 @@ jobs:
 
     steps:
       # ----------------------------------------------------------
-      # Checkout
+      # Repository
       # ----------------------------------------------------------
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
+      # ----------------------------------------------------------
+      # YAML Validation
+      # ----------------------------------------------------------
+
+      - name: Install yamllint
+        run: python -m pip install yamllint
+
+      - name: Lint GitHub Actions YAML
+        run: yamllint .github/workflows/ci.yml
 
       # ----------------------------------------------------------
       # Terraform
       # ----------------------------------------------------------
 
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: 1.14.8
 
