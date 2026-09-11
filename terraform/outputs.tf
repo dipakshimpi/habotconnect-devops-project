@@ -49,3 +49,13 @@ output "analytics_service_account_email" {
   description = "Email address of the service account used for D1 analytics."
   value       = google_service_account.analytics.email
 }
+
+output "backend_service_account_email" {
+  description = "Email address of the service account intended for the Django backend."
+  value       = google_service_account.backend.email
+}
+
+output "app_engine_application_id" {
+  description = "Google App Engine application identifier."
+  value       = google_app_engine_application.backend.app_id
+}

@@ -16,6 +16,7 @@ resource "google_project_service" "required_apis" {
     "storage.googleapis.com",
     "bigquery.googleapis.com",
     "iam.googleapis.com",
+    "appengine.googleapis.com",
   ])
 
   project = var.project_id
@@ -47,6 +48,25 @@ resource "google_service_account" "analytics" {
 
   depends_on = [
     google_project_service.required_apis["iam.googleapis.com"]
+  ]
+}
+
+
+resource "google_service_account" "backend" {
+  account_id   = "habot-backend"
+  display_name = "Habot Connect Django Backend Service Account"
+
+  depends_on = [
+    google_project_service.required_apis["iam.googleapis.com"]
+  ]
+}
+
+resource "google_app_engine_application" "backend" {
+  project     = var.project_id
+  location_id = var.app_engine_location
+
+  depends_on = [
+    google_project_service.required_apis["appengine.googleapis.com"]
   ]
 }
 

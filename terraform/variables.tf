@@ -40,3 +40,9 @@ variable "table_id" {
   type        = string
   default     = "student_onboarding"
 }
+
+variable "app_engine_location" {
+  description = "Google App Engine application location."
+  type        = string
+  default     = "asia-south1"
+}

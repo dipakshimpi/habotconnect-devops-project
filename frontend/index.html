@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Onboarding</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="container">
+        <section class="card">
+            <h1>Student Onboarding</h1>
+            <p class="subtitle">
+                Enter the student details for validation.
+            </p>
+
+            <form id="onboarding-form">
+
+                <label for="student_id">Student ID</label>
+                <input
+                    type="text"
+                    id="student_id"
+                    name="student_id"
+                    required
+                >
+
+                <label for="full_name">Full Name</label>
+                <input
+                    type="text"
+                    id="full_name"
+                    name="full_name"
+                    required
+                >
+
+                <label for="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                >
+
+                <label for="guardian_consent">Guardian Consent</label>
+                <select id="guardian_consent" name="guardian_consent" required>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+
+                <label for="learning_difficulty">Learning Difficulty</label>
+                <select
+                    id="learning_difficulty"
+                    name="learning_difficulty"
+                    required
+                >
+                    <option value="none">None</option>
+                    <option value="dyslexia">Dyslexia</option>
+                    <option value="dyscalculia">Dyscalculia</option>
+                    <option value="adhd">ADHD</option>
+                    <option value="other">Other</option>
+                </select>
+
+                <label for="age_band">Age Band</label>
+                <select id="age_band" name="age_band" required>
+                    <option value="under_13">Under 13</option>
+                    <option value="13_to_17">13 to 17</option>
+                    <option value="18_plus">18+</option>
+                </select>
+
+                <label for="emergency_contact">Emergency Contact</label>
+                <input
+                    type="text"
+                    id="emergency_contact"
+                    name="emergency_contact"
+                    inputmode="numeric"
+                    required
+                >
+
+                <label for="data_sharing_consent">
+                    Data Sharing Consent
+                </label>
+                <select
+                    id="data_sharing_consent"
+                    name="data_sharing_consent"
+                    required
+                >
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+
+                <button type="submit">Submit</button>
+            </form>
+
+            <div id="result" class="result"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
