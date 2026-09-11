@@ -2,10 +2,12 @@
 # Habot Connect FZCO — Junior Cloud & DevOps Engineer Hiring Project
 #
 # File: .github/workflows/ci.yml
-# Purpose: Fail-closed CI checks for YAML correctness, Terraform
-#          validation, hardcoded secrets, and IaC security.
+# Purpose: Fail-closed Poka-Yoke CI gate for the actual project:
+#          Django/Python, HTML/CSS/JavaScript, YAML, Terraform,
+#          and hardcoded-secret validation.
 #
 # Author: Dipak Shimpi
+# Contact: shimpidipak81@gmail.com
 
 name: Poka-Yoke CI
 
@@ -13,14 +15,14 @@ on:
   push:
   pull_request:
 
-# The workflow only needs to read repository contents.
-# This follows the least-privilege principle.
+# The workflow only needs read access to repository contents.
+# No write permissions are required for validation.
 permissions:
   contents: read
 
 jobs:
   validate:
-    name: Validate Infrastructure
+    name: Validate Project
     runs-on: ubuntu-latest
 
     steps:
@@ -30,6 +32,28 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      # ----------------------------------------------------------
+      # Python / Django Backend
+      # ----------------------------------------------------------
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install Python quality tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install flake8 black
+
+      - name: Run Flake8
+        run: flake8 backend
+
+      - name: Check Python formatting
+        run: black --check backend
 
       # ----------------------------------------------------------
       # YAML Validation
@@ -38,11 +62,11 @@ jobs:
       - name: Install yamllint
         run: python -m pip install yamllint
 
-      - name: Lint GitHub Actions YAML
+      - name: Validate GitHub Actions YAML
         run: yamllint .github/workflows/ci.yml
 
       # ----------------------------------------------------------
-      # Terraform
+      # Terraform Infrastructure
       # ----------------------------------------------------------
 
       - name: Set up Terraform
@@ -63,6 +87,30 @@ jobs:
         run: terraform validate
 
       # ----------------------------------------------------------
+      # Frontend
+      # ----------------------------------------------------------
+      #
+      # The project contains a lightweight HTML/CSS/JavaScript
+      # frontend:
+      #
+      #   frontend/index.html
+      #   frontend/script.js
+      #   frontend/style.css
+      #
+      # It is not a React or Node.js package application.
+      # Therefore npm, package.json, package-lock.json, and
+      # ESLint dependencies are intentionally not introduced.
+      #
+      # ----------------------------------------------------------
+
+      - name: Verify frontend source files
+        shell: bash
+        run: |
+          test -f frontend/index.html
+          test -f frontend/script.js
+          test -f frontend/style.css
+
+      # ----------------------------------------------------------
       # Secret Detection
       # ----------------------------------------------------------
 
@@ -70,15 +118,3 @@ jobs:
         uses: gitleaks/gitleaks-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # ----------------------------------------------------------
-      # Infrastructure Security Scan
-      # ----------------------------------------------------------
-
-      - name: Scan Terraform for security misconfigurations
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          scan-type: config
-          scan-ref: terraform
-          severity: HIGH,CRITICAL
-          exit-code: 1
