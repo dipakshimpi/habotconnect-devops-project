@@ -200,9 +200,10 @@ The Task 3 implementation is contained in:
 ```text
 backend/
 ├── student_onboarding/
-│   ├── models.py
-│   ├── serializers.py
 │   ├── dcyn.py
+│   ├── models.py
+│   ├── pubsub.py
+│   ├── serializers.py
 │   └── views.py
 └── config/
     └── urls.py

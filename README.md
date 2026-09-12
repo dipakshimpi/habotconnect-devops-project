@@ -28,10 +28,12 @@ GitHub Repository
 GitHub Actions
     ↓
 Poka-Yoke Checks
+    ├── Python code quality (Flake8)
+    ├── Python formatting (Black --check)
     ├── YAML validation (yamllint)
     ├── Terraform formatting and validation (terraform fmt / terraform validate)
-    ├── Hardcoded secret detection (Gitleaks)
-    └── Infrastructure security scanning (Trivy)
+    ├── Frontend static assets verification
+    └── Hardcoded secret detection (Gitleaks)
     ↓
 PASS → Continue
 FAIL → Stop
@@ -89,13 +91,14 @@ The pipeline is intentionally fail-closed. A failed validation produces a non-ze
 
 The workflow performs:
 
-- YAML validation (yamllint)
-- Terraform formatting validation (`terraform fmt -check`)
+- Python code quality linting (Flake8)
+- Python formatting validation (`black --check backend`)
+- YAML validation (`yamllint .github/workflows/ci.yml`)
+- Terraform formatting validation (`terraform fmt -check -recursive`)
 - Terraform initialization (`terraform init -backend=false`)
 - Terraform validation (`terraform validate`)
+- Frontend source files verification (`test -f index.html/script.js/style.css`)
 - Hardcoded secret detection (Gitleaks)
-- Infrastructure security scanning (Trivy)
-- Python formatting and linting
 
 ### Fail-Closed Logic
 
@@ -169,7 +172,7 @@ Open `http://127.0.0.1:5500/`.
 
 The frontend submits data to `http://127.0.0.1:8000/api/student-onboarding/`.
 
-**Detailed frontend documentation:** [`frontend/README.md`](frontend/README.md)
+**Detailed frontend documentation:** [`docs/Frontend_Readme.md`](docs/Frontend_Readme.md)
 
 ## Project Structure
 
@@ -181,10 +184,19 @@ habotconnect-devops-project/
 │       └── ci.yml
 │
 ├── backend/
-│   ├── config/
-│   ├── student_onboarding/
+│   ├── app.yaml
 │   ├── manage.py
-│   └── requirements.txt
+│   ├── requirements.txt
+│   ├── config/
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   └── wsgi.py
+│   └── student_onboarding/
+│       ├── dcyn.py
+│       ├── models.py
+│       ├── pubsub.py
+│       ├── serializers.py
+│       └── views.py
 │
 ├── frontend/
 │   ├── README.md
@@ -193,18 +205,24 @@ habotconnect-devops-project/
 │   └── style.css
 │
 ├── terraform/
+│   ├── README.md
 │   ├── main.tf
 │   ├── variables.tf
 │   ├── outputs.tf
 │   ├── versions.tf
+│   ├── pubsub-schema.avsc
 │   └── modules/
+│       ├── d0-raw-landing/
+│       └── d1-staged-enforced/
 │
 ├── docs/
+│   ├── Frontend_Readme.md
 │   ├── d0-raw-landing.md
 │   ├── d1-staged-enforced.md
 │   ├── poka-yoke-ci.md
 │   └── task-3-dcyn-schema-validation.md
 │
+├── e2e-query.sql
 └── slides/
 ```
 
@@ -214,9 +232,9 @@ The project applies mistake-proofing at three explicit boundaries, separating co
 
 | Boundary | Trigger | Control | Outcome |
 |---|---|---|---|
-| Development | Developer mistake (e.g. hardcoded secret, invalid Terraform) | GitHub Actions — yamllint, terraform fmt/validate, Gitleaks, Trivy | Blocked before merge |
+| Development | Developer mistake (e.g. formatting error, invalid YAML/Terraform, hardcoded secret) | GitHub Actions — Flake8, Black, yamllint, terraform fmt/validate, frontend verification, Gitleaks | Blocked before merge |
 | Application | Invalid onboarding data | Django REST Framework Serializer + DCYN | Blocked before acceptance |
-| Data | Validated application data | Pub/Sub → BigQuery D1 | Flows through to Analytics |
+| Data | Validated application data | Pub/Sub (AVRO schema) → BigQuery D1 (Row-Level Security) | Flows through to Analytics |
 
 ## Key Engineering Principle
 
