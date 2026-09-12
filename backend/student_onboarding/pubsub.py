@@ -1,3 +1,11 @@
+"""
+Habot Connect FZCO — Junior Cloud & DevOps Engineer Hiring Project
+
+File: backend/student_onboarding/pubsub.py
+Author: Dipak Shimpi
+Contact: shimpidipak81@gmail.com
+"""
+
 import json
 
 from django.conf import settings

@@ -1,3 +1,11 @@
+/*
+  Habot Connect FZCO — Junior Cloud & DevOps Engineer Hiring Project
+
+  File: frontend/script.js
+  Author: Dipak Shimpi
+  Contact: shimpidipak81@gmail.com
+*/
+
 const form = document.getElementById("onboarding-form");
 const result = document.getElementById("result");
 

@@ -5,6 +5,7 @@
   Purpose: Defines shared GCP resources and connects the infrastructure modules.
 
   Author: Dipak Shimpi
+  Contact: shimpidipak81@gmail.com
 */
 
 # ------------------------------------------------------------

@@ -1,3 +1,12 @@
+"""
+Habot Connect FZCO — Junior Cloud & DevOps Engineer Hiring Project
+
+File: backend/student_onboarding/dcyn.py
+Author: Dipak Shimpi
+Contact: shimpidipak81@gmail.com
+"""
+
+
 def check_dcyn(data):
     checks = {
         "guardian_consent": data.get("guardian_consent") is True,

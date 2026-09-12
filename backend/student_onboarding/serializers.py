@@ -1,3 +1,11 @@
+"""
+Habot Connect FZCO — Junior Cloud & DevOps Engineer Hiring Project
+
+File: backend/student_onboarding/serializers.py
+Author: Dipak Shimpi
+Contact: shimpidipak81@gmail.com
+"""
+
 from rest_framework import serializers
 
 from .dcyn import check_dcyn

@@ -1,3 +1,11 @@
+"""
+Habot Connect FZCO — Junior Cloud & DevOps Engineer Hiring Project
+
+File: backend/config/settings.py
+Author: Dipak Shimpi
+Contact: shimpidipak81@gmail.com
+"""
+
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

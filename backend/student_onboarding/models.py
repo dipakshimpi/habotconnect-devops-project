@@ -1,4 +1,12 @@
-﻿from django.db import models
+"""
+Habot Connect FZCO — Junior Cloud & DevOps Engineer Hiring Project
+
+File: backend/student_onboarding/models.py
+Author: Dipak Shimpi
+Contact: shimpidipak81@gmail.com
+"""
+
+from django.db import models
 
 
 class StudentOnboarding(models.Model):

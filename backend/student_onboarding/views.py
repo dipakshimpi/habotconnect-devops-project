@@ -1,3 +1,11 @@
+"""
+Habot Connect FZCO — Junior Cloud & DevOps Engineer Hiring Project
+
+File: backend/student_onboarding/views.py
+Author: Dipak Shimpi
+Contact: shimpidipak81@gmail.com
+"""
+
 from datetime import datetime, timezone
 
 from rest_framework import status
