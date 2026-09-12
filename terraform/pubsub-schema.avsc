@@ -29,7 +29,10 @@
     },
     {
       "name": "created_at",
-      "type": "string"
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-micros"
+      }
     },
     {
       "name": "schema_version",
