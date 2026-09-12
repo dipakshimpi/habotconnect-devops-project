@@ -1,0 +1,43 @@
+{
+  "type": "record",
+  "name": "StudentOnboarding",
+  "namespace": "habotconnect",
+  "fields": [
+    {
+      "name": "student_id",
+      "type": "string"
+    },
+    {
+      "name": "full_name",
+      "type": "string"
+    },
+    {
+      "name": "email",
+      "type": "string"
+    },
+    {
+      "name": "owner_email",
+      "type": "string"
+    },
+    {
+      "name": "course",
+      "type": "string"
+    },
+    {
+      "name": "status",
+      "type": "string"
+    },
+    {
+      "name": "created_at",
+      "type": "string"
+    },
+    {
+      "name": "schema_version",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    }
+  ]
+}

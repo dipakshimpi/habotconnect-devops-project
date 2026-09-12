@@ -6,6 +6,7 @@
            IAM access, and row-level security.
 
   Author: Dipak Shimpi
+  Contact: shimpidipak81@gmail.com
 */
 
 # ------------------------------------------------------------
@@ -71,6 +72,12 @@ resource "google_bigquery_table" "student_onboarding" {
       type        = "TIMESTAMP"
       mode        = "REQUIRED"
       description = "Timestamp when the record was created."
+    },
+    {
+      name        = "schema_version"
+      type        = "STRING"
+      mode        = "NULLABLE"
+      description = "Version of the student onboarding event schema."
     }
   ])
 
@@ -104,4 +111,15 @@ resource "google_bigquery_row_access_policy" "owner_access" {
   grantees = [
     "serviceAccount:${var.analytics_service_account_email}"
   ]
+}
+
+# ------------------------------------------------------------
+# Pub/Sub → BigQuery Writer IAM
+# ------------------------------------------------------------
+
+resource "google_bigquery_dataset_iam_member" "pubsub_writer" {
+  project    = var.project_id
+  dataset_id = google_bigquery_dataset.d1_staged_enforced.dataset_id
+  role       = "roles/bigquery.dataEditor"
+  member     = "serviceAccount:service-326762783488@gcp-sa-pubsub.iam.gserviceaccount.com"
 }

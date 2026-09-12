@@ -1,11 +1,14 @@
-﻿import os
+import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get(
-    "DJANGO_SECRET_KEY",
-    "local-development-key",
+GOOGLE_CLOUD_PROJECT = os.environ.get(
+    "GOOGLE_CLOUD_PROJECT",
+    "divine-bloom-441216-m7",
 )
+
+
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 

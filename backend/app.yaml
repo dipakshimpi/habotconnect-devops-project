@@ -1,0 +1,9 @@
+runtime: python313
+
+entrypoint: gunicorn -b :$PORT config.wsgi:application
+
+service_account: habot-backend@divine-bloom-441216-m7.iam.gserviceaccount.com
+
+env_variables:
+  DJANGO_DEBUG: "False"
+  DJANGO_ALLOWED_HOSTS: "divine-bloom-441216-m7.el.r.appspot.com"

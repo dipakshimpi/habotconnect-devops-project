@@ -17,6 +17,7 @@ resource "google_project_service" "required_apis" {
     "bigquery.googleapis.com",
     "iam.googleapis.com",
     "appengine.googleapis.com",
+    "pubsub.googleapis.com",
   ])
 
   project = var.project_id
@@ -51,6 +52,9 @@ resource "google_service_account" "analytics" {
   ]
 }
 
+# ------------------------------------------------------------
+# Backend Service Account
+# ------------------------------------------------------------
 
 resource "google_service_account" "backend" {
   account_id   = "habot-backend"
@@ -60,6 +64,10 @@ resource "google_service_account" "backend" {
     google_project_service.required_apis["iam.googleapis.com"]
   ]
 }
+
+# ------------------------------------------------------------
+# App Engine Application
+# ------------------------------------------------------------
 
 resource "google_app_engine_application" "backend" {
   project     = var.project_id
@@ -104,5 +112,64 @@ module "d1_staged_enforced" {
 
   depends_on = [
     google_project_service.required_apis["bigquery.googleapis.com"]
+  ]
+}
+
+
+
+# ------------------------------------------------------------
+# Pub/Sub Schema
+# ------------------------------------------------------------
+
+resource "google_pubsub_schema" "student_onboarding" {
+  name       = "student-onboarding-schema"
+  project    = var.project_id
+  type       = "AVRO"
+  definition = file("${path.module}/pubsub-schema.avsc")
+
+  depends_on = [
+    google_project_service.required_apis["pubsub.googleapis.com"]
+  ]
+}
+
+# ------------------------------------------------------------
+# Pub/Sub Topic
+# ------------------------------------------------------------
+
+resource "google_pubsub_topic" "student_onboarding" {
+  name    = "student-onboarding"
+  project = var.project_id
+
+  schema_settings {
+    schema   = google_pubsub_schema.student_onboarding.id
+    encoding = "JSON"
+  }
+
+  depends_on = [
+    google_project_service.required_apis["pubsub.googleapis.com"],
+    google_pubsub_schema.student_onboarding
+  ]
+}
+
+
+# ------------------------------------------------------------
+# Pub/Sub → BigQuery Subscription
+# ------------------------------------------------------------
+
+resource "google_pubsub_subscription" "student_onboarding_bigquery" {
+  name    = "student-onboarding-bigquery"
+  topic   = google_pubsub_topic.student_onboarding.id
+  project = var.project_id
+
+  bigquery_config {
+    table               = "${var.project_id}:${var.dataset_id}.${var.table_id}"
+    use_topic_schema    = true
+    write_metadata      = false
+    drop_unknown_fields = false
+  }
+
+  depends_on = [
+    module.d1_staged_enforced,
+    google_pubsub_topic.student_onboarding
   ]
 }

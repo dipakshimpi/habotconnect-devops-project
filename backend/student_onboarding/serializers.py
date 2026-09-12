@@ -1,10 +1,41 @@
-﻿from rest_framework import serializers
+from rest_framework import serializers
 
 from .dcyn import check_dcyn
 from .models import StudentOnboarding
 
 
 class StudentOnboardingSerializer(serializers.ModelSerializer):
+    student_id = serializers.CharField(
+        max_length=30,
+        allow_blank=False,
+        trim_whitespace=True,
+    )
+    full_name = serializers.CharField(
+        max_length=100,
+        allow_blank=False,
+        trim_whitespace=True,
+    )
+    email = serializers.EmailField(
+        max_length=254,
+    )
+    guardian_consent = serializers.BooleanField()
+    learning_difficulty = serializers.CharField(
+        max_length=50,
+        allow_blank=False,
+        trim_whitespace=True,
+    )
+    age_band = serializers.CharField(
+        max_length=20,
+        allow_blank=False,
+        trim_whitespace=True,
+    )
+    emergency_contact = serializers.CharField(
+        max_length=15,
+        allow_blank=False,
+        trim_whitespace=True,
+    )
+    data_sharing_consent = serializers.BooleanField()
+
     class Meta:
         model = StudentOnboarding
         fields = [
